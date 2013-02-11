@@ -23,6 +23,11 @@ Then install redisco.
 
 
 
+Documentation
+-------------
+The documentation is available at : https://redisco.readthedocs.org
+
+
 Which version should I consider ?
 ---------------------------------
 
@@ -134,6 +139,32 @@ auto_now
     Automatically set the datetime/date field to now/today everytime the object
     is saved. Default is False.
 
+
+Class options
+-------------
+
+You can specify some options in your Model to control the behaviour of the
+back scene.
+
+::
+    class User(models.Model):
+        firstname = models.Attribute()
+        lastname = models.Attribute()
+        
+        @property
+        def fullname(self):
+            return "%s %s" % (self.firstname, self.lastname)
+
+        class Meta:
+            indices = ['fullname']
+            db = redis.Redis(host="localhost", db="6666")
+            key = 'Account'
+
+
+``indices`` is used to add extra indices that will be saved in the model.
+``db`` object will be used instead of the global redisco ``redis_client``
+``key`` will be used as the main key in the redis Hash (and sub objects)
+instead of the class name.
 
 Saving and Validating
 ---------------------
